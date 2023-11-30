@@ -1,0 +1,15 @@
+{
+  "name": "lote_validade",
+  "version": "1.0.0",
+  "description": "Gerar descrição de lotes e validade e modelos de materiais baseados no QR code ou código de barras",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Murilo Apolonio",
+  "license": "ISC",
+  "devDependencies": {
+    "express": "^4.18.2"
+  }
+}
