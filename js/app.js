@@ -108,7 +108,7 @@ function getInfo(code) {
 
     resultadoFinal = `${barCode[tipo]}:  ${barCode[produto]} LOTE: ${lote} VAL: ${validade}; `
 
-    newDocument.showResult().innerHTML += resultadoFinal + "</br>";
+    newDocument.showResult().innerHTML += resultadoFinal;
     newDocument.imputCodeDocument().value = ""
 }
 
