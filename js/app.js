@@ -1,29 +1,5 @@
-﻿const barCode = {
-    //dve  125
-    '173537': 'DVE 20*25 125f',
-    '173538': 'DVE 25*30 125f',
-    '173539': 'DVE 28*35 125f',
-    '173542': 'DVE 35*43 125f',
-    //dvm 125
-    '827157': 'DVM 20*25 125f',
-    '897632': 'DVM 25*30 125f',
-    '157212': 'DVM 28*35 125f',
-    // dve 100
-    '173605': 'DVE 8X10 100f',
-    '173606': 'DVE 10X12 100f',
-    '173607': 'DVE 14X11 100f',
-    '173608': 'DVE 35X43 100f',
-    // dvm 100
-    '141115': 'DVM 8X10 100f',
-    '828509': 'DVM 10X12 100f',
-
-
-    //  UNIDADE x CAIXA
-    '14088997': 'UN',
-    '16088997': 'CX',
-
-}
-
+﻿
+// 160889971735420172512093050010028544549Z
 // let info2 = '140889978976320172409063012510028544207E'
 //Remover espaços de uma string
 //.replace(/\s/g, '')
@@ -104,34 +80,17 @@ function getCodeToFormat(e) {
 
 
 function getInfo(code) {
-    let resultadoFinal;
+    // let resultadoFinal;
 
-    let unidade = code.slice(0, 8);
+    let tipoUnidade = code.slice(0, 8);
     let produto = code.slice(8, 14);
     let lote = code.slice(30, 40);
     let validade = validateValidade(code.slice(17, 23));
 
+    newObjDataFormat(tipoUnidade, produto, lote, validade)
 
-
-
-    // let dataTipe = new Object();
-    // dataTipe[''] = {
-    //     modelo: '',
-    //     unidade: 0,
-    //     caixa: 0,
-    //     validade: []
-    // };
-
-
-
-    console.log(barCode[unidade])
-    console.log(barCode[produto])
-    console.log(lote)
-    console.log(validade)
-
-    resultadoFinal = `${barCode[unidade]}:  ${barCode[produto]} ${lote}  ${validade};`
-
-    newDocument.showResult().innerHTML += resultadoFinal;
+    newDocument.showResult().innerHTML = newFormatScreen();
+    // newDocument.showResult().innerHTML = (newFormatScreen() == undefined) ? "" : newFormatScreen();
     newDocument.imputCodeDocument().value = ""
 }
 
@@ -140,16 +99,52 @@ function validateValidade(data) {
 }
 
 
+
+
+function newObjDataFormat(tipoUnidade, produto, lote, validade) {
+    if (!dataTipe.hasOwnProperty(produto)) {
+        dataTipe[produto] = {
+            modelo: barCode[produto],
+            lotes: [],
+            validades: [],
+            unidade: 0,
+            caixa: 0,
+        }
+    }
+    if (!dataTipe[produto].validades.includes(validade)) dataTipe[produto].validades.push(validade);
+    if (!dataTipe[produto].lotes.includes(lote)) dataTipe[produto].lotes.push(lote);
+
+    if (barCode[tipoUnidade] == "CX") {
+        dataTipe[produto].caixa += 1;
+    } else {
+        dataTipe[produto].unidade += 1;
+    }
+    console.log(dataTipe)
+}
+
+function newFormatScreen() {
+    let novoResultadoFormatado = "";
+    Object.keys(dataTipe).forEach(key => {
+
+        novoResultadoFormatado += `CX:${dataTipe[key].caixa}, UN:${dataTipe[key].unidade} ${dataTipe[key].modelo} ${dataTipe[key].lotes} ${dataTipe[key].validades};`
+    });
+    return novoResultadoFormatado
+}
+
 function addToClipBoard() {
     let textToCopy = document.querySelector('#resultado');
-    let string = textToCopy.innerText
-    if (string == "") return false
+    let string = textToCopy.innerText;
+
+    if (string == "") return false;
     navigator.clipboard.writeText(string)
         .then(() => {
+            // console.log(string)
             showSpan()
-        })
+        });
 
 }
+
+
 
 function showSpan() {
     setTimeout(() => { newDocument.showHideSpan().style.display = 'block' }, 100);
