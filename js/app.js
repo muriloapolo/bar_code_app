@@ -1,19 +1,24 @@
 ﻿const barCode = {
     //dve  125
-    '173537': 'DVE 20*25 125F',
-    '173538': 'DVE 25*30 125F',
-    '173539': 'DVE 28*35 125F',
-    '173542': 'DVE 35*43 125F',
+    '173537': 'DVE 20*25 125f',
+    '173538': 'DVE 25*30 125f',
+    '173539': 'DVE 28*35 125f',
+    '173542': 'DVE 35*43 125f',
     //dvm 125
-    '827157': 'DVM 20*25 125F',
-    '897632': 'DVM 25*30 125F',
-    '157212': 'DVM 28*35 125F',
+    '827157': 'DVM 20*25 125f',
+    '897632': 'DVM 25*30 125f',
+    '157212': 'DVM 28*35 125f',
     // dve 100
-    '173605': 'DVE 8X10 100F',
-    '173606': 'DVE 10X12 100F',
-    '173607': 'DVE 14X11 100F',
-    '173608': 'DVE 35X43 100F',
-    // 
+    '173605': 'DVE 8X10 100f',
+    '173606': 'DVE 10X12 100f',
+    '173607': 'DVE 14X11 100f',
+    '173608': 'DVE 35X43 100f',
+    // dvm 100
+    '141115': 'DVM 8X10 100f',
+    '828509': 'DVM 10X12 100f',
+
+
+    //  UNIDADE x CAIXA
     '14088997': 'UN',
     '16088997': 'CX',
 
@@ -41,19 +46,24 @@ class PageItens {
     getCode() {
         return this.inputeCodigo.addEventListener('keyup', getCodeToFormat);
     }
+
     showResult() {
         return this.displayResultado;
     }
+
     copyToClip() {
         return this.copyClipboard.addEventListener('click', addToClipBoard);
     }
+
     // Arquivos de segunda Instância
     showHideSpan() {
         return this.spanCopy;
     }
+
     errorSpan() {
         return this.errorSpan;
     }
+
     changeBackground() {
         return this.changeBg.addEventListener('click', () => {
             let body = document.querySelector('body');
@@ -96,17 +106,30 @@ function getCodeToFormat(e) {
 function getInfo(code) {
     let resultadoFinal;
 
-    let tipo = code.slice(0, 8);
+    let unidade = code.slice(0, 8);
     let produto = code.slice(8, 14);
     let lote = code.slice(30, 40);
     let validade = validateValidade(code.slice(17, 23));
 
-    console.log(barCode[tipo])
+
+
+
+    // let dataTipe = new Object();
+    // dataTipe[''] = {
+    //     modelo: '',
+    //     unidade: 0,
+    //     caixa: 0,
+    //     validade: []
+    // };
+
+
+
+    console.log(barCode[unidade])
     console.log(barCode[produto])
     console.log(lote)
     console.log(validade)
 
-    resultadoFinal = `${barCode[tipo]}:  ${barCode[produto]} LOTE: ${lote} VAL: ${validade}; `
+    resultadoFinal = `${barCode[unidade]}:  ${barCode[produto]} ${lote}  ${validade};`
 
     newDocument.showResult().innerHTML += resultadoFinal;
     newDocument.imputCodeDocument().value = ""
