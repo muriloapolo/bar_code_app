@@ -44,7 +44,7 @@ class PageItens {
         return this.changeBg.addEventListener('click', () => {
             let body = document.querySelector('body');
             body.classList.toggle("darkBgColor");
-            console.log('teste')
+
         })
     }
 }
@@ -116,7 +116,7 @@ function newObjDataFormat(tipoUnidade, produto, lote, validade) {
     } else {
         dataTipe[produto].unidade += 1;
     }
-    console.log(produto)
+
 }
 
 function recuperaTipo(data) {
@@ -147,8 +147,7 @@ function recuperaTipo(data) {
             valueCx = false
             break;
     }
-    console.log(valueCx)
-    console.log(data)
+
     return valueCx
 
 }
