@@ -47,10 +47,6 @@ class PageItens {
             console.log('teste')
         })
     }
-
-
-
-
 }
 
 
@@ -90,7 +86,6 @@ function getInfo(code) {
     newObjDataFormat(tipoUnidade, produto, lote, validade)
 
     newDocument.showResult().innerHTML = newFormatScreen();
-    // newDocument.showResult().innerHTML = (newFormatScreen() == undefined) ? "" : newFormatScreen();
     newDocument.imputCodeDocument().value = ""
 }
 
@@ -114,19 +109,55 @@ function newObjDataFormat(tipoUnidade, produto, lote, validade) {
     if (!dataTipe[produto].validades.includes(validade)) dataTipe[produto].validades.push(validade);
     if (!dataTipe[produto].lotes.includes(lote)) dataTipe[produto].lotes.push(lote);
 
-    if (barCode[tipoUnidade] == "CX") {
-        dataTipe[produto].caixa += 1;
+    if (barCode[tipoUnidade] == "CX" && (recuperaTipo(produto) == true)) {
+        dataTipe[produto].unidade += 4;
+    } else if (barCode[tipoUnidade] == "CX" && recuperaTipo(produto) == false) {
+        dataTipe[produto].unidade += 5;
     } else {
         dataTipe[produto].unidade += 1;
     }
-    console.log(dataTipe)
+    console.log(produto)
+}
+
+function recuperaTipo(data) {
+    let valueCx;
+    switch (data) {
+        case '173537':
+            valueCx = true
+            break;
+        case '173538':
+            valueCx = true
+            break;
+        case '173539':
+            valueCx = true
+            break;
+        case '173542':
+            valueCx = true
+            break;
+        case '827157':
+            valueCx = true
+            break;
+        case '897632':
+            valueCx = true
+            break;
+        case '157212':
+            valueCx = true
+            break;
+        default:
+            valueCx = false
+            break;
+    }
+    console.log(valueCx)
+    console.log(data)
+    return valueCx
+
 }
 
 function newFormatScreen() {
     let novoResultadoFormatado = "";
     Object.keys(dataTipe).forEach(key => {
 
-        novoResultadoFormatado += `CX:${dataTipe[key].caixa}, UN:${dataTipe[key].unidade} ${dataTipe[key].modelo} ${dataTipe[key].lotes} ${dataTipe[key].validades};`
+        novoResultadoFormatado += `UN:${dataTipe[key].unidade} ${dataTipe[key].modelo} ${dataTipe[key].lotes} ${dataTipe[key].validades};`
     });
     return novoResultadoFormatado
 }
@@ -138,9 +169,9 @@ function addToClipBoard() {
     if (string == "") return false;
     navigator.clipboard.writeText(string)
         .then(() => {
-            // console.log(string)
             showSpan()
-        });
+        })
+        .catch(e => alert(e, 'Error'))
 
 }
 
@@ -154,3 +185,4 @@ function showErrorLineCode() {
     setTimeout(() => { newDocument.errorSpan.style.display = 'block' }, 100);
     setTimeout(() => { newDocument.errorSpan.style.display = 'none' }, 800)
 }
+

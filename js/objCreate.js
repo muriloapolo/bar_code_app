@@ -1,3 +1,5 @@
+// 14088997 897632 017 240906 3012510 028544207E
+
 const barCode = {
     //dve  125
     '173537': 'DVE 20*25 125f',
@@ -25,44 +27,11 @@ const barCode = {
 }
 
 const dataTipe = new Object();
-// const dataEx = {
-//     "141115": {
-//         "modelo": "DVM 8X10 100f",
-//         "lotes": [
-//             "028544549Z"
-//         ],
-//         "validades": [
-//             "09/12/25"
-//         ],
-//         "unidade": 1,
-//         "caixa": 1
-//     },
-//     "173542": {
-//         "modelo": "DVE 35*43 125f",
-//         "lotes": [
-//             "028544549Z",
-//             "028544549Z",
-//             "028544549Z"
-//         ],
-//         "validades": [
-//             "09/12/25",
-//             "09/12/25",
-//             "09/12/25"
-//         ],
-//         "unidade": 0,
-//         "caixa": 3
-//     },
-//     "897632": {
-//         "modelo": "DVM 25*30 125f",
-//         "lotes": [
-//             "028544207E",
-//             "028544207E"
-//         ],
-//         "validades": [
-//             "06/09/24",
-//             "06/09/24"
-//         ],
-//         "unidade": 2,
-//         "caixa": 0
-//     }
-// }
+
+
+
+/*
+Funções aleatórias de formatação
+Temporárias neste arquivo
+*/
+
