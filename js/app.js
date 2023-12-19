@@ -183,10 +183,11 @@ function addToClipBoard() {
 function clearTheClipBoard() {
     let textToCopy = document.querySelector('#resultado');
     textToCopy.innerHTML = ''
-
+    
     navigator.clipboard.writeText("")
         .then(() => {
             alert('Limpo')
+            window.location.reload()
             newDocument.imputCodeDocument().removeAttribute('disabled');
 
         })
