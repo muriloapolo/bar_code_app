@@ -35,7 +35,6 @@ body {
 .container {
     width: 100%;
     height: calc(100vh - 20px);
-
     text-align: center;
     position: relative;
 }
@@ -175,13 +174,27 @@ body {
 
 
 .insertResultado {
+    position: relative;
     margin-bottom: 2em;
     height: max-content;
     padding: 0.6em 0;
     color: #023f6d;
 }
-.buttonBox{
+
+.buttonBox {
     position: relative;
+    width: 50%;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.popUpClean {
+    position: absolute;
+    width: 85%;
+    min-height: 90%;
+    background-color: #6b6968f1;
+    z-index: 2;
+    display: none;
 }
 
 .copiadoParaTransferencia {
@@ -204,9 +217,9 @@ body {
 
 .btn {
     color: #361414;
-    background-color: #6e9fec;
+
     cursor: pointer;
-    font-size: 0.8em;
+    font-size: 1.5vw;
     font-weight: 400;
     line-height: 45px;
     margin: 0 auto 2em;
@@ -214,15 +227,36 @@ body {
     padding: 0.2em 0.5em;
     border-radius: 0.7em;
     border: none;
-
+    width: 40%;
 }
 
-.btn:hover {
+.copy {
+    background-color: #6e9fec;
+}
+
+.clear {
+    background-color: #e93c3c;
+}
+
+.copy:hover {
     transition: 0.5s;
     border-radius: 1em;
     color: azure;
     outline: 1px solid;
     background: linear-gradient(267deg, #5b83c4, #c6cbd3, rgb(47, 92, 189));
+    background-size: 600% 600%;
+
+    -webkit-animation: AnimationName 10s ease infinite;
+    -moz-animation: AnimationName 10s ease infinite;
+    animation: AnimationName 10s ease infinite;
+}
+
+.clear:hover {
+    transition: 0.5s;
+    border-radius: 1em;
+    color: rgb(255, 248, 240);
+    outline: 1px solid;
+    background: linear-gradient(267deg, #ff0000, #ce824f, #f14805);
     background-size: 600% 600%;
 
     -webkit-animation: AnimationName 10s ease infinite;

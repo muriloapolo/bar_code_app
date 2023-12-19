@@ -12,6 +12,8 @@ class PageItens {
         this.spanCopy = document.getElementById('alertCopy');
         this.errorSpan = document.getElementById('infoCodeError')
         this.changeBg = document.getElementById('changeBg');
+        this.clearClip = document.getElementById('clearClipBoard');
+
     }
 
 
@@ -30,6 +32,9 @@ class PageItens {
     copyToClip() {
         return this.copyClipboard.addEventListener('click', addToClipBoard);
     }
+    clear() {
+        return this.clearClip.addEventListener('click', clearTheClipBoard)
+    }
 
     // Arquivos de segunda Instância
     showHideSpan() {
@@ -40,20 +45,22 @@ class PageItens {
         return this.errorSpan;
     }
 
+
+
     changeBackground() {
         return this.changeBg.addEventListener('click', () => {
             let body = document.querySelector('body');
             body.classList.toggle("darkBgColor");
-
         })
     }
 }
 
 
-const newDocument = new PageItens()
-newDocument.getCode()
-newDocument.copyToClip()
-newDocument.changeBackground()
+const newDocument = new PageItens();
+newDocument.getCode();
+newDocument.copyToClip();
+newDocument.clear();
+newDocument.changeBackground();
 
 
 
@@ -71,9 +78,6 @@ function getCodeToFormat(e) {
     }
 
 }
-
-
-
 
 function getInfo(code) {
     // let resultadoFinal;
@@ -169,8 +173,24 @@ function addToClipBoard() {
     navigator.clipboard.writeText(string)
         .then(() => {
             showSpan()
+            newDocument.imputCodeDocument().setAttribute('disabled', true)
+
         })
-        .catch(e => alert(e, 'Error'))
+        .catch(e => console.error(e, 'Error'))
+
+}
+
+function clearTheClipBoard() {
+    let textToCopy = document.querySelector('#resultado');
+    textToCopy.innerHTML = ''
+
+    navigator.clipboard.writeText("")
+        .then(() => {
+            alert('Limpo')
+            newDocument.imputCodeDocument().removeAttribute('disabled');
+
+        })
+        .catch(e => console.error(e, 'Error'))
 
 }
 

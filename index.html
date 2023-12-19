@@ -27,6 +27,7 @@
     </header>
     <!-- Campo de inserção de dados -->
     <div id="inputText" class="inputTextField flexDisp">
+
       <input type="text" id="codeBar" class="inputCss" />
       <span class="spanError" id="infoCodeError">Inconsistente</span>
 
@@ -37,16 +38,21 @@
 
     <div class="formatResult flexDisp">
 
-      <div id="resultado" class="insertResultado"></div>
+      <div id="resultado" class="insertResultado flexDisp"></div>
+      <!-- Formatar para permitir limpeza do conteúdo automático -->
+        
+
     </div>
 
     <div class="buttonBox flexDisp">
-      <button class="btn" id="copyClipboard">Copy to Clipboard</button>
+      <button class="btn copy" id="copyClipboard">Copy to Clipboard</button>
+      <button class="btn clear" id="clearClipBoard">Reset</button>
       <span id="alertCopy" class="copiadoParaTransferencia">Texto Copiado</span>
 
     </div>
     
     </div>
+ 
   </main>
   <!-- Footer -->
   <footer class="footer">
