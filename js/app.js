@@ -182,15 +182,25 @@ function addToClipBoard() {
 
 function clearTheClipBoard() {
     let textToCopy = document.querySelector('#resultado');
-    textToCopy.innerHTML = ''
 
-    navigator.clipboard.writeText("")
-        .then(() => {
-            alert('Limpo')
-            newDocument.imputCodeDocument().removeAttribute('disabled');
+    //Confirma ainda não funciona 
+    let verify = confirm('Clear?')
+    if (verify == false) {
+        newDocument.imputCodeDocument().removeAttribute('disabled')
+    } else {
+        navigator.clipboard.writeText('').then()
+        textToCopy.innerHTML = ''
+        newDocument.imputCodeDocument().removeAttribute('disabled');
 
-        })
-        .catch(e => console.error(e, 'Error'))
+    }
+
+
+
+
+
+
+
+
 
 }
 
