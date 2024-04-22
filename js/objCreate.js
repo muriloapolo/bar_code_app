@@ -25,7 +25,7 @@ const barCode = {
     '16088997': 'CX',
 
 }
-
+//CRIA  O OBJETO COMPLETO
 const dataTipe = new Object();
 
 
@@ -34,4 +34,30 @@ const dataTipe = new Object();
 Funções aleatórias de formatação
 Temporárias neste arquivo
 */
+
+function contarItens(array) {
+    let contagem = {};
+
+    // Contar cada item no array
+    array.forEach(item => {
+        if (contagem[item]) {
+            contagem[item]++;
+        } else {
+            contagem[item] = 1;
+        }
+    });
+
+    // Criar um novo array com os itens e suas contagens
+    let resultado = [];
+
+    for (let item in contagem) {
+        resultado.push(`${contagem[item]} un: ${item} `);
+    }
+
+    return resultado;
+}
+
+// Exemplo de uso:
+
+
 

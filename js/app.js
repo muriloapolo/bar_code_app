@@ -101,26 +101,45 @@ function validateValidade(data) {
 
 
 function newObjDataFormat(tipoUnidade, produto, lote, validade) {
+
     if (!dataTipe.hasOwnProperty(produto)) {
         dataTipe[produto] = {
             modelo: barCode[produto],
+            //-----------
+            loteEvalidade: [],
+            //------------------
+
+
+
             lotes: [],
             validades: [],
             unidade: 0,
             caixa: 0,
         }
     }
-    if (!dataTipe[produto].validades.includes(validade)) dataTipe[produto].validades.push(validade);
-    if (!dataTipe[produto].lotes.includes(lote)) dataTipe[produto].lotes.push(lote);
+    //teste
+    // dataTipe[produto].loteEvalidade.push(lote, validade);
+    // dataTipe[produto].loteEvalidade.validade.push(validade);
+    //teste
+
+    // if (!dataTipe[produto].validades.includes(validade)) dataTipe[produto].validades.push(validade);
+    // if (!dataTipe[produto].lotes.includes(lote)) dataTipe[produto].lotes.push(lote);
 
     if (barCode[tipoUnidade] == "CX" && (recuperaTipo(produto) == true)) {
         dataTipe[produto].unidade += 4;
+        for (let index = 0; index < 4; index++) {
+            dataTipe[produto].loteEvalidade.push(lote, validade);
+        }
     } else if (barCode[tipoUnidade] == "CX" && recuperaTipo(produto) == false) {
         dataTipe[produto].unidade += 5;
+        for (let index = 0; index < 5; index++) {
+            dataTipe[produto].loteEvalidade.push(lote, validade);
+        }
     } else {
         dataTipe[produto].unidade += 1;
+        dataTipe[produto].loteEvalidade.push(lote, validade);
     }
-
+    console.log(dataTipe)
 }
 
 function recuperaTipo(data) {
@@ -160,7 +179,9 @@ function newFormatScreen() {
     let novoResultadoFormatado = "";
     Object.keys(dataTipe).forEach(key => {
 
-        novoResultadoFormatado += `UN:${dataTipe[key].unidade} ${dataTipe[key].modelo} ${dataTipe[key].lotes} ${dataTipe[key].validades};`
+        // console.log(key)
+        novoResultadoFormatado += `UN:${dataTipe[key].unidade} ${dataTipe[key].modelo} 
+        ${contarItens(dataTipe[key].loteEvalidade)}`;
     });
     return novoResultadoFormatado
 }
@@ -185,23 +206,22 @@ function clearTheClipBoard() {
 
     //Confirma ainda não funciona 
     let verify = confirm('Clear?')
+
     if (verify == false) {
         newDocument.imputCodeDocument().removeAttribute('disabled')
+
     } else {
         navigator.clipboard.writeText('').then()
         textToCopy.innerHTML = ''
         newDocument.imputCodeDocument().removeAttribute('disabled');
 
+
+        Object.keys(dataTipe).forEach(function (key) {
+            delete dataTipe[key];
+        });
+
+
     }
-
-
-
-
-
-
-
-
-
 }
 
 
