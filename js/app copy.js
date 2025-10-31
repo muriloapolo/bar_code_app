@@ -63,100 +63,85 @@ newDocument.clear();
 newDocument.changeBackground();
 
 
-// =========================================================
-// FUNÇÃO CENTRAL PARA PROCESSAMENTO EM LOTE (BATCH)
-// =========================================================
 
 function getCodeToFormat(e) {
-    // 1. Ação só ocorre ao pressionar ENTER
-    if (e.which !== 13) {
-        return;
+
+    let code = e.target.value;
+
+    if (e.which == 13) {
+        if (code.length < 40 || code.length > 40) {
+            showErrorLineCode()
+            return
+        }
+        code = code.replace(/\s/g, '').trim()
+        getInfo(code)
     }
 
-    // Obtém o texto completo do campo de input
-    let batchCode = e.target.value;
-
-    // Remove TODOS os caracteres não-código (espaços, quebras de linha, etc.)
-    const cleanCodeString = batchCode.replace(/\s/g, '').trim();
-
-    // Verifica se o tamanho total é múltiplo de 40 (tamanho do código)
-    if (cleanCodeString.length === 0 || cleanCodeString.length % 40 !== 0) {
-        // Mostra erro se não for múltiplo exato.
-        showErrorLineCode();
-        console.error("Lote inválido. O total de caracteres limpos não é um múltiplo de 40.");
-        sho
-        return;
-    }
-
-    // Divide a string limpa em um Array de códigos de 40 caracteres
-    const codesArray = [];
-    for (let i = 0; i < cleanCodeString.length; i += 40) {
-        codesArray.push(cleanCodeString.substring(i, i + 40));
-    }
-
-    // Processa o lote
-    processBatch(codesArray);
-
-    // Limpa o input após o processamento bem-sucedido
-    e.target.value = "";
 }
 
 /**
- * Itera sobre o array de códigos, processa cada um e atualiza o DOM UMA ÚNICA VEZ.
- * @param {string[]} codesArray Array de códigos de 40 caracteres.
+ * Analisa um código completo, extrai informações chave e atualiza a UI.
+ * @param {string} code O código de entrada a ser processado.
  */
-function processBatch(codesArray) {
+function getInfo(code) {
+    // 1. **Verificação de Entrada:** Garante confiabilidade, falhando rapidamente se a entrada for inválida.
+    if (!code || typeof code !== 'string' || code.length < 40) {
+        console.error("Código inválido ou incompleto.");
+        // Opcional: Mostrar uma mensagem de erro na tela
+        newDocument.showError('Código inválido. Verifique o formato.');
+        return;
+    }
 
-    // Itera e processa o agrupamento de dados em memória
-    codesArray.forEach(code => {
-        // A função getInfo agora é responsável APENAS por extrair e agrupar
-        getInfo(code);
-    });
+    // 2. **Desestruturação Otimizada (Extração de Dados):** // Garante que a extração de substrings (slices) seja feita de forma direta.
+    // Usamos variáveis const para imutabilidade e clareza.
+    const tipoUnidade = code.slice(0, 8);
+    const produto = code.slice(8, 14);
+    const lote = code.slice(30, 40);
+    // Chamada imediata e uso do resultado (validação de validade)
+    const validade = validateValidade(code.slice(17, 23));
 
-    // Atualiza a interface (I/O) UMA ÚNICA VEZ no final
+    // 3. **Processamento/Mapeamento (Separação de Responsabilidades):**
+    // Cria o objeto de dados com as informações extraídas. 
+    // Assumindo que 'newObjDataFormat' recebe e processa/armazena esses dados.
+    newObjDataFormat(tipoUnidade, produto, lote, validade);
+
+    // 4. **Atualização da Interface (I/O):**
+    // As operações de DOM são agrupadas e executadas por último.
     try {
+        // Redução das chamadas de método (evita múltiplas buscas pelo elemento DOM se 'newDocument' não for um objeto já pronto)
         const showResultElement = newDocument.showResult();
         if (showResultElement) {
             showResultElement.innerHTML = newFormatScreen();
         }
+
+        newDocument.imputCodeDocument().value = "";
     } catch (error) {
-        console.error("Erro ao atualizar a interface após o lote.", error);
+        console.error("Erro ao atualizar a interface ou limpar o campo.", error);
     }
-}
-
-// =========================================================
-// FUNÇÕES DE DADOS E LÓGICA
-// =========================================================
-
-/**
- * Analisa um código individual, extrai informações chave e chama o agrupamento.
- * Não atualiza a UI e não limpa o input.
- * @param {string} code O código de entrada (deve ter 40 caracteres).
- */
-function getInfo(code) {
-    // Mantido para segurança (caso a função seja chamada fora de processBatch)
-    if (!code || typeof code !== 'string' || code.length !== 40) {
-        console.error("Erro na leitura do código individual: ", code);
-        return;
-    }
-
-    const tipoUnidade = code.slice(0, 8);
-    const produto = code.slice(8, 14);
-    const lote = code.slice(30, 40);
-    const validade = validateValidade(code.slice(17, 23));
-
-    newObjDataFormat(tipoUnidade, produto, lote, validade);
 }
 
 function validateValidade(data) {
     return `${data.slice(4, 6)}/${data.slice(2, 4)}/${data.slice(0, 2,)}`
 }
 
+
+
+
 /**
  * Adiciona informações de um novo item (ou caixa) no objeto de dados agrupando por Lote e Validade.
- * Sempre usa 4 UNIDADES para CAIXA (CX).
+ * Assumimos que 'dataTipe' é um objeto global ou acessível.
+ * * @param {string} tipoUnidade Indica se é "CX" ou "UN".
+ * @param {string} produto O código do produto.
+ * @param {string} lote O número do lote.
+ * @param {string} validade A validade formatada.
+ */
+/**
+ * Adiciona informações de um novo item (ou caixa) no objeto de dados agrupando por Lote e Validade.
+ * AGORA SEMPRE USA 4 UNIDADES PARA CAIXA (CX).
+ * ...
  */
 function newObjDataFormat(tipoUnidade, produto, lote, validade) {
+    // 1. Inicializa o objeto do Produto, se não existir
     if (!dataTipe.hasOwnProperty(produto)) {
         dataTipe[produto] = {
             modelo: barCode[produto],
@@ -168,19 +153,25 @@ function newObjDataFormat(tipoUnidade, produto, lote, validade) {
         }
     }
 
+    // 2. Define a quantidade de UNIDADES a ser adicionada
     let quantidadeCaixas = 0;
-    let quantidadeUnidades = 1;
+    let quantidadeUnidades = 1; // Padrão: 1
 
     const isCaixa = barCode[tipoUnidade] === "CX";
+    // const isTipoEspecial = recuperaTipo(produto); <--- Esta variável não será mais usada para decidir a contagem.
 
+    // Lógica CORRIGIDA para usar SEMPRE 4 para CX:
     if (isCaixa) {
-        quantidadeUnidades = 4; // Contagem fixa de 4 para CX
+        quantidadeUnidades = 4; // SEMPRE 4 UNIDADES para CX
         quantidadeCaixas = 1;
     }
+    // Se não for CX, quantidadeUnidades permanece 1.
 
+    // 3. Atualiza a contagem total de unidades e caixas
     dataTipe[produto].unidade += quantidadeUnidades;
     dataTipe[produto].caixa += quantidadeCaixas;
 
+    // ... (4. Lógica de Agrupamento Lote/Validade - Permanece igual)
     const arrayAgrupamento = dataTipe[produto].loteEvalidade;
 
     const itemExistente = arrayAgrupamento.find(item =>
@@ -196,16 +187,26 @@ function newObjDataFormat(tipoUnidade, produto, lote, validade) {
             quantidade: quantidadeUnidades
         });
 
+        // Opcional: Manter as listas de lotes e validades únicas, se ainda forem necessárias
         if (!dataTipe[produto].validades.includes(validade)) dataTipe[produto].validades.push(validade);
         if (!dataTipe[produto].lotes.includes(lote)) dataTipe[produto].lotes.push(lote);
     }
 }
 
 function recuperaTipo(data) {
+    // 1. Defina um Array com todos os códigos de interesse
     const CODIGOS_ESPECIAIS = [
-        '173537', '173538', '173539', '173542',
-        '827157', '897632', '157212'
+        '173537',
+        '173538',
+        '173539',
+        '173542',
+        '827157',
+        '897632',
+        '157212'
     ];
+
+    // 2. Use o método includes() para verificar a existência
+    // O resultado (true ou false) é exatamente o que você quer retornar.
     return CODIGOS_ESPECIAIS.includes(data);
 }
 
@@ -216,59 +217,71 @@ function newFormatScreen() {
 
         let detalhesLoteValidade = "";
 
+        // 1. Constrói a linha de detalhes do Lote/Validade
         produtoData.loteEvalidade.forEach(itemLote => {
-            detalhesLoteValidade += ` ${itemLote.quantidade} un L ${itemLote.lote}  V: ${itemLote.validade}`;
+            detalhesLoteValidade += ` ${itemLote.quantidade} un Lote ${itemLote.lote} validade: ${itemLote.validade}`;
         });
 
-        // Incluindo contagem de CAIXA
+        // 2. Constrói a linha principal do produto, SEM o excesso de quebras de linha e espaços no início.
+        // O trim() final vai garantir que não haja espaços ou quebras no começo/fim.
         novoResultadoFormatado += `UN: ${produtoData.unidade} ${produtoData.modelo}${detalhesLoteValidade}\n`;
     });
 
-    // Retorna o resultado final limpo
+    // Retorna o resultado final, removendo o espaço/quebra de linha inicial se houver.
     return novoResultadoFormatado.trim();
 }
-
-// =========================================================
-// FUNÇÕES DE INTERFACE (UI)
-// =========================================================
 
 function addToClipBoard() {
     let textToCopy = document.querySelector('#resultado');
     let string = textToCopy.innerText;
 
-    if (string === "") return false;
+    if (string == "") return false;
     navigator.clipboard.writeText(string)
         .then(() => {
             showSpan()
             newDocument.imputCodeDocument().setAttribute('disabled', true)
+
         })
         .catch(e => console.error(e, 'Error'))
+
 }
 
 function clearTheClipBoard() {
+    // 1. Tenta encontrar o elemento do resultado
     const textToCopy = document.querySelector('#resultado');
 
+    // Se o elemento não for encontrado, a função para aqui (fail-safe)
     if (!textToCopy) {
         console.error("Elemento '#resultado' não encontrado. Verifique o ID.");
         return;
     }
 
+    // 2. Confirmação do usuário
     const verify = confirm('Deseja realmente limpar a tela e resetar os dados?');
 
-    if (verify) {
+    if (verify) { // Usuário clicou em 'OK'
+
+        // A. Limpa o clipboard (Assíncrono, não bloqueia a interface)
         navigator.clipboard.writeText('').then();
+
+        // B. Limpa a tela (DOM)
         textToCopy.innerHTML = '';
-        newDocument.imputCodeDocument().value = ''; // Limpa o input
+
+        // C. **ADICIONADO:** Limpa o campo de input
+        newDocument.imputCodeDocument().value = '';
+
+        // D. Habilita o input
         newDocument.imputCodeDocument().removeAttribute('disabled');
 
-        // Limpa o objeto global de dados
+        // E. Limpa o objeto global de dados (dataTipe)
         for (const key in dataTipe) {
             if (dataTipe.hasOwnProperty(key)) {
                 delete dataTipe[key];
             }
         }
 
-    } else {
+    } else { // Usuário clicou em 'Cancelar'
+        // Ação apenas para cancelar o 'disabled', caso estivesse ativo
         newDocument.imputCodeDocument().removeAttribute('disabled');
     }
 }
@@ -277,10 +290,8 @@ function showSpan() {
     setTimeout(() => { newDocument.showHideSpan().style.display = 'block' }, 100);
     setTimeout(() => { newDocument.showHideSpan().style.display = 'none' }, 800)
 }
-
 function showErrorLineCode() {
     setTimeout(() => { newDocument.errorSpan.style.display = 'block' }, 100);
-    setTimeout(() => { newDocument.errorSpan.style.display = 'none' }, 800);
-
+    setTimeout(() => { newDocument.errorSpan.style.display = 'none' }, 800)
 }
 

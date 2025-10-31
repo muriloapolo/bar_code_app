@@ -27,9 +27,6 @@ const barCode = {
 }
 //CRIA  O OBJETO COMPLETO
 const dataTipe = new Object();
-
-
-
 /*
 Funções aleatórias de formatação
 Temporárias neste arquivo
